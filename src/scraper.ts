@@ -8,17 +8,17 @@ async function scrapeSite() {
     axios.get(baseURL)
       .then(res => {
         const $ = cheerio.load(res.data)
-        $('.card-track_card__DsvKd').each((index, element) => {
-        // $('.episode-playlist_list__n3n04').each((index, element) => {
-          // const songCard = $(element).find('.card-track_card__DsvKd').text()
-          
-          const songName = $(element).find('.card-track_topInfo__HiV_p').text()
-          const artist = $(element).find('.card-track_artist__JLcd_').text()
-          const release = $(element).find('.card-track_release__4pGxo').text()
+
+        const cardTrack = `[class*="card-track`
+
+        $(`${cardTrack}_card"]`).each((index, element) => {
+          const songName = $(element).find(`${cardTrack}_topInfo"]`).text().replace(/^.*(AM|PM)/i, "");
+          const artist = $(element).find(`${cardTrack}_artist"]`).text()
+          const release = $(element).find(`${cardTrack}_release"]`).text()
           
           console.log(`
-            Song Name: ${songName}\n
-            Arist: ${artist}\n
+            Song Name: ${songName}
+            Arist: ${artist}
             Release: ${release}\n
             `);
         })
