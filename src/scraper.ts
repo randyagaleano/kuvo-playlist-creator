@@ -2,38 +2,38 @@ import axios from "axios";
 import "dotenv/config";
 import * as cheerio from "cheerio";
 
-async function scrapeSite() {
-    // perform an HTTP GET request to the target page
-    const baseURL = "https://www.kuvo.org/shows/268585/episodes/10432"
-    axios.get(baseURL)
-      .then(res => {
-        const $ = cheerio.load(res.data)
+const episode = "https://www.kuvo.org/shows/268585/episodes/10432"
 
-        const cardTrack = `[class*="card-track`
-
-        $(`${cardTrack}_card"]`).each((index, element) => {
-          const songName = $(element).find(`${cardTrack}_topInfo"]`).text().replace(/^.*(AM|PM)/i, "");
-          const artist = $(element).find(`${cardTrack}_artist"]`).text()
-          const release = $(element).find(`${cardTrack}_release"]`).text()
-          
-          console.log(`
-            Song Name: ${songName}
-            Arist: ${artist}
-            Release: ${release}\n
-            `);
-        })
-      }).catch(err => console.log(err));
-
-    
-    // const response = await axios.get(baseURL)
-    // // get the HTML from the server response
-    // // and log it
-    // const html = response.data
-    // console.log(html)
-  }
+async function getPlaylist(baseUrl: string): Promise<SongInformation[]> {
+  try {
+    const res = await axios.get(baseUrl);
+    const $ = cheerio.load(res.data);
+    const cardTrack = `[class*="card-track`;
   
-  scrapeSite()
+    const songs = [...$(`${cardTrack}_card"]`)].map(element => ({
+      title: $(element).find(`${cardTrack}_topInfo"]`).text().replace(/^.*(AM|PM)/i, ""),
+      artist: $(element).find(`${cardTrack}_artist"]`).text(),
+      release: $(element).find(`${cardTrack}_release"]`).text().replace(/^.*from/, ""),
+    }));
+    return songs;
+  } catch (error) {
+    console.error("Error fetching playlist: ", error);
+    throw error;
+  }    
+}
 
-async function getSongNames() {
-  
+async function getSongInformation() {
+  const playlist: SongInformation[] = await getPlaylist(episode);
+  playlist.forEach(async (songs) => {
+    console.log(songs.title)
+    // search for songs on Spotify API?
+  });
+}
+
+getSongInformation();
+
+interface SongInformation {
+  title: string,
+  artist: string,
+  release: string
 }
