@@ -1,10 +1,9 @@
 import axios from "axios";
 import "dotenv/config";
 import * as cheerio from "cheerio";
+import { SongInformation } from '../interfaces/kuvo';
 
-const episode = "https://www.kuvo.org/shows/268585/episodes/10432"
-
-async function getPlaylist(baseUrl: string): Promise<SongInformation[]> {
+export async function getPlaylistFromKUVO(baseUrl: string): Promise<SongInformation[]> {
   try {
     const res = await axios.get(baseUrl);
     const $ = cheerio.load(res.data);
@@ -20,20 +19,4 @@ async function getPlaylist(baseUrl: string): Promise<SongInformation[]> {
     console.error("Error fetching playlist: ", error);
     throw error;
   }    
-}
-
-async function getSongInformation() {
-  const playlist: SongInformation[] = await getPlaylist(episode);
-  playlist.forEach(async (songs) => {
-    console.log(songs.title)
-    // search for songs on Spotify API?
-  });
-}
-
-getSongInformation();
-
-interface SongInformation {
-  title: string,
-  artist: string,
-  release: string
 }
