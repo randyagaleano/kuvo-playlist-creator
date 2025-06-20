@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AuthorizationResponse } from "../interfaces/authorization";
+import "dotenv/config";
 
 const credentials = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64');
 
@@ -20,7 +21,7 @@ export async function getAccessToken() {
 
     if (response.status === 200) {
       const token = response.data.access_token;
-    //   console.log('Access Token:', token);
+      //   console.log('Access Token:', token);
       return token;
     } else {
       console.error('Authentication failed with status:', response.status);
