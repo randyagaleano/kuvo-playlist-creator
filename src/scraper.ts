@@ -1,5 +1,4 @@
 import axios from "axios";
-import "dotenv/config";
 import * as cheerio from "cheerio";
 import { SongInformation } from '../interfaces/kuvo';
 
