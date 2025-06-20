@@ -20,20 +20,27 @@ async function createSearchableSongArray(episode: string): Promise<string[]> {
     return searchQueries;
 }
 
-export async function getSpotifyTrackIDs() {
+
+export async function getSpotifyTrackIDs(): Promise<string[]> {
     const token = await getAccessToken();
     const songs = await createSearchableSongArray(episodeUrl);
-    songs.forEach(song => {
-        axios.get(`https://api.spotify.com/v1/search?q=${song}&type=track`, {
+
+    const songPromise = songs.map(song => {
+        return axios.get(`https://api.spotify.com/v1/search?q=${song}&type=track`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         }).then(response => {
             const songID = response.data.tracks.items[0].id
-            // console.log(`${songID}`);
-            return songID
+            return `spotify:track:${songID}`
         }).catch(error => {
             console.error('Error: ', error);
         });
     })
+
+    // @ts-ignore
+    const uriArray: string[] = await Promise.all(songPromise)
+
+    console.log(uriArray);
+    return uriArray;
 }

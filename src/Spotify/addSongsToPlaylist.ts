@@ -1,7 +1,7 @@
 import axios from "axios";
 import "dotenv/config";
 import { getUserInformation } from "./getUserInformation";
-// import { getSpotifyTrackIDs } from "../getSongIDs";
+import { getSpotifyTrackIDs } from "../getSongIDs";
 
 const token = process.env.TOKEN;
 
@@ -41,11 +41,9 @@ async function getPlaylistID() {
 
 async function addSongsToPlaylist() {
     const playlistID = await getPlaylistID();
-    // const songs = await getSpotifyTrackIDs()
+    const songs = await getSpotifyTrackIDs()
     const requestBody = {
-        uris: [
-            "spotify:track:5detsOsoGLvE0rU7KVt8Kg"
-        ],
+        uris: songs,
         position: 0
     }    
     try {
