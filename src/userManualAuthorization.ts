@@ -18,7 +18,7 @@ function generateRandomString(length: number): string {
 app.get('/login', function (req, res) {
 
     var state = generateRandomString(16);
-    var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private';
+    var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative';
 
     res.redirect('https://accounts.spotify.com/authorize?' +
         querystring.stringify({
